@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Origen - Gestión</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f8f8f8;
+            color: #1a1a1a;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+            border-bottom: 2px solid #4B6B4E;
+        }
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        .header p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* LOGIN */
+        .login-screen {
+            background: white;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            max-width: 400px;
+            margin: 100px auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .login-screen h2 {
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        .login-buttons {
+            display: flex;
+            gap: 15px;
+            flex-direction: column;
+        }
+        .btn-login {
+            padding: 15px 20px;
+            font-size: 16px;
+            border: 2px solid #4B6B4E;
+            background: white;
+            color: #4B6B4E;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-login:hover {
+            background: #4B6B4E;
+            color: white;
+        }
+
+        /* DASHBOARD */
+        .dashboard {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .dashboard-header h2 {
+            font-size: 20px;
+        }
+        .btn-logout {
+            padding: 8px 16px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-logout:hover {
+            background: #e0e0e0;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .metric {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 6px;
+            border-left: 4px solid #4B6B4E;
+        }
+        .metric-label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        .metric-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+
+        .btn-new-sale {
+            padding: 16px 32px;
+            font-size: 16px;
+            background: #4B6B4E;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .btn-new-sale:hover {
+            background: #3a5239;
+        }
+
+        /* FORM */
+        .form-screen {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .form-screen h2 {
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            font-family: inherit;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #4B6B4E;
+            box-shadow: 0 0 0 3px rgba(75, 107, 78, 0.1);
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .btn-submit {
+            flex: 1;
+            padding: 12px;
+            background: #4B6B4E;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        .btn-submit:hover {
+            background: #3a5239;
+        }
+        .btn-cancel {
+            flex: 1;
+            padding: 12px;
+            background: #f0f0f0;
+            color: #1a1a1a;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        .btn-cancel:hover {
+            background: #e0e0e0;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .message.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        .message.error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        .message.loading {
+            background: #e3f2fd;
+            color: #1565c0;
+            border-left: 4px solid #2196f3;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const BACKEND_URL = "https://script.google.com/macros/s/AKfycbzPNR8CBqGeCFcgWeuL7FlkQoEhRtmLEFghfSxLv0Ty3oworgvOyaMYHAsHFv_FRR1Y/exec";
+
+        const PRODUCTOS = [
+            { name: "Almendras Carmel USA", precio: 18000, costo: 12857 },
+            { name: "Almendras Nonpareil Medianas", precio: 19750, costo: 14107 },
+            { name: "Avellanas Peladas Chicas", precio: 32000, costo: 22857 },
+            { name: "Avellanas Peladas Medianas", precio: 34500, costo: 24643 },
+            { name: "Castañas de Cajú", precio: 15000, costo: 10714 },
+            { name: "Castañas de Cajú Cruda", precio: 16500, costo: 11786 },
+            { name: "Castañas de Pará Peladas", precio: 59000, costo: 42143 },
+            { name: "Nueces Mariposa Extra Light", precio: 16000, costo: 11429 },
+            { name: "Pistacho con Cáscara Salado y Tostado", precio: 32000, costo: 22857 },
+            { name: "Pistacho Pelado Entero Sin Sal", precio: 63900, costo: 45643 },
+            { name: "Mix Cervecero", precio: 5000, costo: 3571 },
+            { name: "Mix Salado", precio: 6600, costo: 4714 },
+            { name: "Mix de Las Sierras", precio: 8000, costo: 5714 },
+            { name: "Mix de Semillas (Lino, Chia, Sésamo, Girasol)", precio: 4000, costo: 2857 },
+            { name: "Mix Europeo Con Pasas", precio: 18000, costo: 12857 },
+            { name: "Mix Europeo Sin Pasas", precio: 16900, costo: 12071 },
+            { name: "Mix Frutas Secas", precio: 8750, costo: 6250 },
+            { name: "Mix Nuez, Castaña y Almendra", precio: 15000, costo: 10714 },
+            { name: "Mix Premium", precio: 16500, costo: 11786 },
+            { name: "Mix Tropical", precio: 9500, costo: 6786 },
+            { name: "Arándanos Deshidratados", precio: 13000, costo: 9286 },
+            { name: "Banana Chips", precio: 9950, costo: 7107 },
+            { name: "Ciruelas Dagen Sin Carozo", precio: 8700, costo: 6214 },
+            { name: "Ciruelas Presidente Sin Carozo", precio: 12000, costo: 8571 },
+            { name: "Coco en Escamas (Flakes)", precio: 18750, costo: 13393 },
+            { name: "Coco Rallado Fino High Fat", precio: 11000, costo: 7857 },
+            { name: "Coco Rallado Fino Low Fat", precio: 7000, costo: 5000 },
+            { name: "Dátiles con Carozo Zahidy - Egipto", precio: 5250, costo: 3750 },
+            { name: "Dátiles de Irán", precio: 6750, costo: 4821 },
+            { name: "Higos Negros Grandes", precio: 9500, costo: 6786 },
+            { name: "Medallones de Durazno", precio: 11000, costo: 7857 },
+            { name: "Pasas de Uva Jumbo Negras", precio: 4750, costo: 3393 },
+            { name: "Pasas de Uva Rubias", precio: 5250, costo: 3750 },
+            { name: "Pasas de Uva Sultaninas Negras", precio: 3750, costo: 2679 },
+            { name: "Tomate Seco Nacional Especial", precio: 11750, costo: 8393 },
+            { name: "Maíz Frito Barbacoa", precio: 10500, costo: 7500 },
+            { name: "Maíz Frito Salado", precio: 10000, costo: 7143 },
+            { name: "Maní Chocolate", precio: 12250, costo: 8750 },
+            { name: "Maní con Cáscaras Boliviano", precio: 7000, costo: 5000 },
+            { name: "Maní Japones", precio: 5000, costo: 3571 },
+            { name: "Maní Saborizado Jamón", precio: 5000, costo: 3571 },
+            { name: "Maní Saborizado Pizza", precio: 5000, costo: 3571 },
+            { name: "Maní Saborizado Queso", precio: 5000, costo: 3571 },
+            { name: "Maní Salado", precio: 5000, costo: 3571 },
+            { name: "Maní sin Sal", precio: 5000, costo: 3571 },
+            { name: "Pasta de Maní GRANOMAX", precio: 6000, costo: 4286 },
+            { name: "Lupines Tentaación", precio: 15000, costo: 10714 },
+            { name: "Chia", precio: 7000, costo: 5000 },
+            { name: "Girasol Pelado Normal", precio: 2850, costo: 2036 },
+            { name: "Lino", precio: 2300, costo: 1643 },
+            { name: "Granola Cereal Mix Light sin Azúcar", precio: 6000, costo: 4286 },
+            { name: "Granola Energy Up", precio: 8000, costo: 5714 },
+            { name: "Granola Tradicional", precio: 8000, costo: 5714 },
+            { name: "Granomax Chocolate y Nuez", precio: 6500, costo: 4643 },
+            { name: "Granomax Chocolate", precio: 16000, costo: 11429 },
+            { name: "Granomax Fit Max", precio: 6500, costo: 4643 },
+            { name: "Granomax Natural", precio: 6500, costo: 4643 },
+            { name: "Granomax Pasta de Maní y Chocolate", precio: 6500, costo: 4643 },
+            { name: "Granomax PowerMAX Proteica", precio: 6500, costo: 4643 },
+            { name: "Granomax Veganmax", precio: 6500, costo: 4643 },
+            { name: "Granolla Pasa de Uva y Almendras", precio: 6500, costo: 4643 },
+            { name: "Granomax Chocomax Proteim", precio: 6500, costo: 4643 },
+            { name: "Granolla Arandanos y Coco", precio: 6500, costo: 4643 },
+            { name: "Barra de Cereal Granomax (Chocolate)", precio: 17500, costo: 12500 },
+            { name: "Barra de Cereal Granomax (Manzana)", precio: 17500, costo: 12500 },
+            { name: "Barra de Cereal Granomax (Coco)", precio: 17500, costo: 12500 },
+            { name: "Barra de Cereal Granomax (Banana)", precio: 17500, costo: 12500 },
+            { name: "Barra de cereal Granomax (Arandanos)", precio: 17500, costo: 12500 },
+            { name: "Harina de Almendra Nacional", precio: 4500, costo: 3214 },
+            { name: "Harina de Almendra", precio: 24350, costo: 17393 },
+            { name: "Harina de Avena sin TACC Cumana", precio: 3700, costo: 2643 },
+            { name: "Harina de Avena", precio: 1800, costo: 1286 },
+            { name: "Sal Entrefina con Especias 8y1", precio: 3000, costo: 2143 },
+            { name: "Sal Marina Fina", precio: 2600, costo: 1857 },
+            { name: "Sal Marina Gruesa", precio: 2600, costo: 1857 },
+            { name: "Sal Rosa del Himalaya Gruesa", precio: 2550, costo: 1821 },
+            { name: "Aceitunas Negras Nº 000 Tentación", precio: 14000, costo: 10000 },
+            { name: "Aceitunas Negras Nº 00 Delicias Riojanas", precio: 39000, costo: 27857 },
+            { name: "Aceitunas Verdes Delicias Riojanas con Carozo", precio: 5200, costo: 3714 },
+            { name: "Aceitunas Rellenas Delicias Riojanas", precio: 34900, costo: 24929 },
+            { name: "Aceitunas Verdes Delicias Riojanas Rellenas", precio: 6200, costo: 4429 },
+            { name: "Aceitunas Verdes Nº 000 Tentación", precio: 14000, costo: 10000 },
+            { name: "Aceitunas Verdes Nº 00 Delicias Riojanas", precio: 39200, costo: 28000 },
+            { name: "Aceitunas Verdes Nº 00 MARVAVIC", precio: 8000, costo: 5714 },
+            { name: "Yerba Antiácida con Palo", precio: 4000, costo: 2857 },
+            { name: "Yerba Antiácida sin Palo", precio: 4000, costo: 2857 }
+        ];
+
+        function OriginApp() {
+            const [screen, setScreen] = useState('login');
+            const [user, setUser] = useState(null);
+            const [dashboard, setDashboard] = useState(null);
+            const [message, setMessage] = useState(null);
+            const [loading, setLoading] = useState(false);
+
+            const handleLogin = (username) => {
+                setUser(username);
+                fetchDashboard();
+                setScreen('dashboard');
+            };
+
+            const fetchDashboard = async () => {
+                try {
+                    setLoading(true);
+                    const response = await fetch(`${BACKEND_URL}?action=getDashboard`);
+                    const data = await response.json();
+                    setDashboard(data);
+                } catch (error) {
+                    console.error("Error fetching dashboard:", error);
+                    setMessage({ type: 'error', text: 'Error al cargar datos' });
+                }
+                setLoading(false);
+            };
+
+            const handleNewSale = async (formData) => {
+                try {
+                    setLoading(true);
+                    const producto = PRODUCTOS.find(p => p.name === formData.producto);
+                    
+                    const response = await fetch(BACKEND_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            action: 'addVenta',
+                            cliente: formData.cliente,
+                            producto: formData.producto,
+                            cantidad: parseInt(formData.cantidad),
+                            precio: producto.precio
+                        })
+                    });
+
+                    const result = await response.json();
+                    if (result.success) {
+                        setMessage({ type: 'success', text: '✓ Venta registrada correctamente' });
+                        setTimeout(() => {
+                            setMessage(null);
+                            setScreen('dashboard');
+                            fetchDashboard();
+                        }, 1500);
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                    setMessage({ type: 'error', text: 'Error al registrar venta' });
+                }
+                setLoading(false);
+            };
+
+            const handleLogout = () => {
+                setUser(null);
+                setScreen('login');
+                setMessage(null);
+            };
+
+            if (screen === 'login') {
+                return <LoginScreen onLogin={handleLogin} />;
+            }
+
+            if (screen === 'dashboard') {
+                return (
+                    <Dashboard 
+                        user={user} 
+                        data={dashboard}
+                        onNewSale={() => setScreen('newSale')}
+                        onLogout={handleLogout}
+                        message={message}
+                    />
+                );
+            }
+
+            if (screen === 'newSale') {
+                return (
+                    <NewSaleForm 
+                        productos={PRODUCTOS}
+                        onSubmit={handleNewSale}
+                        onCancel={() => setScreen('dashboard')}
+                        message={message}
+                        loading={loading}
+                    />
+                );
+            }
+        }
+
+        function LoginScreen({ onLogin }) {
+            return (
+                <div className="login-screen">
+                    <h2>Origen</h2>
+                    <p style={{ marginBottom: '30px', color: '#999', fontSize: '14px' }}>Gestión de Stock</p>
+                    <div className="login-buttons">
+                        <button className="btn-login" onClick={() => onLogin('Juan Carlos')}>
+                            Ingresar como Juan Carlos
+                        </button>
+                        <button className="btn-login" onClick={() => onLogin('Rodrigo')}>
+                            Ingresar como Rodrigo
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        function Dashboard({ user, data, onNewSale, onLogout, message }) {
+            return (
+                <div className="container">
+                    <div className="header">
+                        <h1>Origen</h1>
+                        <p>Bienvenido, {user}</p>
+                    </div>
+
+                    <div className="dashboard">
+                        <div className="dashboard-header">
+                            <h2>Dashboard</h2>
+                            <button className="btn-logout" onClick={onLogout}>Cerrar sesión</button>
+                        </div>
+
+                        {message && (
+                            <div className={`message ${message.type}`}>
+                                {message.text}
+                            </div>
+                        )}
+
+                        {data ? (
+                            <>
+                                <div className="metrics">
+                                    <div className="metric">
+                                        <div className="metric-label">Total Ventas (Mes)</div>
+                                        <div className="metric-value">${(data.totalVentas || 0).toLocaleString('es-AR')}</div>
+                                    </div>
+                                    <div className="metric">
+                                        <div className="metric-label">Transacciones</div>
+                                        <div className="metric-value">{data.transacciones || 0}</div>
+                                    </div>
+                                    <div className="metric">
+                                        <div className="metric-label">Última Venta</div>
+                                        <div className="metric-value" style={{ fontSize: '14px' }}>
+                                            {data.ultimaVenta ? data.ultimaVenta[1] || '-' : '-'}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button className="btn-new-sale" onClick={onNewSale}>
+                                    + Nueva Venta
+                                </button>
+                            </>
+                        ) : (
+                            <p>Cargando datos...</p>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        function NewSaleForm({ productos, onSubmit, onCancel, message, loading }) {
+            const [formData, setFormData] = useState({
+                cliente: '',
+                producto: productos[0].name,
+                cantidad: '1'
+            });
+
+            const handleChange = (e) => {
+                const { name, value } = e.target;
+                setFormData(prev => ({ ...prev, [name]: value }));
+            };
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                if (!formData.cliente.trim()) {
+                    alert('Por favor ingresa el nombre del cliente');
+                    return;
+                }
+                onSubmit(formData);
+            };
+
+            const productoSeleccionado = productos.find(p => p.name === formData.producto);
+            const total = (productoSeleccionado?.precio || 0) * parseInt(formData.cantidad || 1);
+            const margen = total * 0.286;
+
+            return (
+                <div className="container">
+                    <div className="form-screen">
+                        <h2>Nueva Venta</h2>
+
+                        {message && (
+                            <div className={`message ${message.type}`}>
+                                {message.text}
+                            </div>
+                        )}
+
+                        <form onSubmit={handleSubmit}>
+                            <div className="form-group">
+                                <label>Cliente</label>
+                                <input
+                                    type="text"
+                                    name="cliente"
+                                    value={formData.cliente}
+                                    onChange={handleChange}
+                                    placeholder="Nombre del cliente"
+                                    disabled={loading}
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label>Producto</label>
+                                <select
+                                    name="producto"
+                                    value={formData.producto}
+                                    onChange={handleChange}
+                                    disabled={loading}
+                                >
+                                    {productos.map((p, idx) => (
+                                        <option key={idx} value={p.name}>{p.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="form-group">
+                                <label>Cantidad</label>
+                                <input
+                                    type="number"
+                                    name="cantidad"
+                                    value={formData.cantidad}
+                                    onChange={handleChange}
+                                    min="1"
+                                    disabled={loading}
+                                />
+                            </div>
+
+                            <div style={{ background: '#f9f9f9', padding: '15px', borderRadius: '6px', marginBottom: '20px' }}>
+                                <div style={{ fontSize: '12px', color: '#999', marginBottom: '8px' }}>RESUMEN</div>
+                                <div style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+                                    Total: ${total.toLocaleString('es-AR')}
+                                </div>
+                                <div style={{ fontSize: '12px', color: '#666' }}>
+                                    Margen: ${Math.round(margen).toLocaleString('es-AR')}
+                                </div>
+                            </div>
+
+                            <div className="form-buttons">
+                                <button 
+                                    type="submit" 
+                                    className="btn-submit"
+                                    disabled={loading}
+                                >
+                                    {loading ? 'Guardando...' : 'Guardar Venta'}
+                                </button>
+                                <button 
+                                    type="button" 
+                                    className="btn-cancel"
+                                    onClick={onCancel}
+                                    disabled={loading}
+                                >
+                                    Cancelar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<OriginApp />);
+    </script>
+</body>
+</html>
